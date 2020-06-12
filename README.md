@@ -194,3 +194,9 @@ ax2.text(-12*1E5,80*1E4, # choice numbers
 ax2.stock_img()
 ax2.gridlines();
 ```
+Later, if you print the figures created, you can export as `*.pdf` format:
+
+```python
+fig1.savefig("../4_Draft_Report/Dissertation/fig/domain_area.pdf",bbox_inches='tight');
+fig2.savefig("../4_Draft_Report/Dissertation/fig/world_area.pdf",bbox_inches='tight')
+```
