@@ -16,12 +16,13 @@ cetesb_password = input('password:')
 start_date = obs_dates.date_qualar.values[0]
 end_date = obs_dates.date_qualar.values[-1]
 
-# for i in cetesb_stations.code:
-#     print('Downloading poll ' + cetesb_stations.name[cetesb_stations.code == i].values + ' Station')
-#     qr.all_photo(cetesb_login, cetesb_password,
-#                         start_date, end_date, i, csv_photo=True)
-#     print('Downloading meteo ' + cetesb_stations.name[cetesb_stations.code == i].values + ' Station')
-#     qr.all_met(cetesb_login, cetesb_password,
-#                         start_date, end_date, i, csv_met=True)
-
 print(obs_dates)
+
+ for i in cetesb_stations.code:
+     print('Downloading poll ' + cetesb_stations.name[cetesb_stations.code == i].values + ' Station')
+     qr.all_photo(cetesb_login, cetesb_password,
+                         start_date, end_date, i, csv_photo=True)
+     print('Downloading meteo ' + cetesb_stations.name[cetesb_stations.code == i].values + ' Station')
+     qr.all_met(cetesb_login, cetesb_password,
+                         start_date, end_date, i, csv_met=True)
+
