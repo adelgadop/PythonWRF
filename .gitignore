@@ -1,4 +1,7 @@
 *~
+.DS_Store
+rain/
+wrf_eval/
 .ipynb_checkpoints
 __pycache__
 all_*
@@ -6,11 +9,5 @@ all_*
 *.pickle
 *.dat
 .old/
-.*
-iag_met_obs_mod.csv
-iag_mod.csv
-iag_obs.csv
-met_obs_mod_all.csv
-met_rcp_changes.csv
-o3_emery.pdf
-stats.csv 
+*.pdf
+*.csv 
