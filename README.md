@@ -2,7 +2,6 @@
 Process outputs from WRF-Chem.
 
 ## WRF-Chem model results processing
-Files related to model results processing and evaluation are in `Results Processing`.
 WRF-Chem model outputs are files format (`wrfout_<domain>_{year}-{m}-{d}_{h}:00:0`) that content matrix values for many parameters meteorological and chemical species.
 
 There are scripts and Jupyter Notebooks used to process WRF-Chem outputs:
