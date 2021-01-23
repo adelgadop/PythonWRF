@@ -1,7 +1,7 @@
-*.
 *~
 .ipynb_checkpoints
 __pycache__
 all_*
 .pkl
 .dat
+.old/
