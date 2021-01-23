@@ -2,6 +2,15 @@
 .ipynb_checkpoints
 __pycache__
 all_*
-.pkl
-.dat
+*.pkl
+*.pickle
+*.dat
 .old/
+.*
+iag_met_obs_mod.csv
+iag_mod.csv
+iag_obs.csv
+met_obs_mod_all.csv
+met_rcp_changes.csv
+o3_emery.pdf
+stats.csv 
