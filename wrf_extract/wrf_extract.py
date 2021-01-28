@@ -5,9 +5,12 @@ from netCDF4 import Dataset
 #import matplotlib.pyplot as plt
 #%matplotlib inline
 import glob
+import pickle as pkl
 
 print("Reading each wrfout...")
-wrfout = [Dataset(i) for i in sorted(glob.glob('../wrfout_diss/wrfout_d02*'))]
+month = input('month (e.g., 09): ')
+year = input('year. ')
+wrfout = [Dataset(i) for i in sorted(glob.glob('../wrfout_diss/wrfout_d02_'+year+'-'+month+'-*'))]
 
 print("Extracting meteorological variables...")
 t2 = wrf.getvar(wrfout, 'T2', timeidx=wrf.ALL_TIMES, method='cat')
@@ -22,14 +25,16 @@ o3 = wrf.getvar(wrfout, 'o3', timeidx=wrf.ALL_TIMES, method='cat')
 no = wrf.getvar(wrfout, 'no', timeidx=wrf.ALL_TIMES, method='cat')
 no2 = wrf.getvar(wrfout, 'no2', timeidx=wrf.ALL_TIMES, method='cat')
 co = wrf.getvar(wrfout, 'co', timeidx=wrf.ALL_TIMES, method='cat')
+tol = wrf.getvar(wrfout, 'tol',timeidx=wrf.ALL_TIMES, method='cat')
 
 # Retrieving values from surface
 o3_sfc  = o3.isel(bottom_top=0)
 co_sfc  = co.isel(bottom_top=0)
 no_sfc  = no.isel(bottom_top=0)
 no2_sfc = no2.isel(bottom_top=0)
+tol_sfc = tol.isel(bottom_top=0)
 
-print("From ppm to ug/m3...o3, no, no2")
+print("From ppm to ug/m3...o3, no, no2, tol")
 # [ug/m3] = [ppm] * P * M_i / (R * T)
 # R = 8.3143 J/K mol
 # P in Pa
@@ -39,9 +44,10 @@ R = 8.3144598 # J/K mol
 o3_u = o3_sfc * psfc * (16 * 3) / (R * t2)
 no_u = no_sfc * psfc * (14 + 16) / (R * t2)
 no2_u = no2_sfc * psfc * (14 + 2*16) / (R * t2)
+tol_u = tol_sfc * psfc * 92.14 / (R * t2)
 
 print("Reading file with station location points")
-cetesb_stations = pd.read_csv('./cetesb2017_latlon.dat')
+cetesb_stations = pd.read_csv('./stations.csv')
 print(cetesb_stations)
 
 # Locating stations in west_east (x) and north_south (y) coordinates
@@ -76,6 +82,8 @@ def cetesb_from_wrf(i, to_local=True):
        west_east=cetesb_dom.x.values[i]).values,
     'co': co_sfc.sel(south_north=cetesb_dom.y.values[i],
        west_east=cetesb_dom.x.values[i]).values,
+    'tol': tol_u.sel(south_north=cetesb_dom.y.values[i],
+       west_east=cetesb_dom.x.values[i]).values,
     'code': cetesb_dom.code.values[i],
     'name': cetesb_dom.name.values[i]})
     if to_local:
@@ -85,23 +93,22 @@ def cetesb_from_wrf(i, to_local=True):
 print("Extracting data and saving it in a dictionary")
 wrf_cetesb = {}
 
-for i in range(0, len(cetesb_dom)):
+for i in range(0,len(cetesb_dom)):
     wrf_cetesb[cetesb_dom.name.iloc[i]] = cetesb_from_wrf(i)
 
-print('Exporting to csv... ')
-name = input('_name.csv: ')
-def cetesb_write_wrf(df):
-    file_name = str(df.code[0]) + name
-    df.to_csv(file_name, index=False)
+print('Exporting to pickle ')
+pkl.dump(wrf_cetesb, open(input('scenario: ')+'_'+year+'_'+month+'.pkl','wb'))
 
+#name = '_FIN_d02.csv' #input('_name.csv: ')
+#def cetesb_write_wrf(df):
+#    file_name = str(df.code[0]) + name
+#    df.to_csv(file_name, index=False)
 
-for k, v in wrf_cetesb.items():
-    cetesb_write_wrf(v)
+#for k, v in wrf_cetesb.items():
+#    cetesb_write_wrf(v)
 
 print('''
 !!!!!!!!!!!!!!!!!
 !! Succesfully !!
 !!!!!!!!!!!!!!!!!
 ''')
-
-
